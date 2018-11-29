@@ -11,13 +11,19 @@ import pandas as pd
 from scipy import spatial
 #from tqdm import tqdm
 
-inpointfile = 'D:\\jloganPython\\dem-validation\\data\\batch\\ob\\val_pts\\2018_03_14\\2018-0314-OB_ne_elht_NAD83_CORS96.csv'
-thinnedoutfile = 'D:\\jloganPython\\dem-validation\\data\\batch\\ob\\val_pts\\2018_03_14\\2018-0314-OB_ne_elht_NAD83_CORS96_hlfmeterThinned_kdtree.csv'
+#inpointfile = 'D:\\jloganPython\\dem-validation\\data\\batch\\ob\\val_pts\\2018_03_14\\2018-0314-OB_ne_elht_NAD83_CORS96.csv'
+#thinnedoutfile = 'D:\\jloganPython\\dem-validation\\data\\batch\\ob\\val_pts\\2018_03_14\\2018-0314-OB_ne_elht_NAD83_CORS96_hlfmeterThinned_kdtree.csv'
 
 #inpointfile = 'D:\\jloganPython\\dem-validation\\data\\batch\\ob\\val_pts\\Data to Andy for SfM comparison\\Final points\\OB20180307finalPtsWithExtraColsQ1Only.xlsx'
 #thinnedoutfile = 'D:\\jloganPython\\dem-validation\\data\\batch\\ob\\val_pts\\2017-0307-OB_ne_elht_NAD83_CORS96_hlfmeterThinned_kdtree_test.csv'
 
-mindist = 0.5
+#Wildlands 2018-11-29
+inpointfile = r"T:\UAS\2018-676-FA\validation\topo\wld17_06.txt"
+thinnedoutfile = r"T:\UAS\2018-676-FA\validation\topo\wld17_06_KDthinned10cm.txt"
+xcol_name = 'Easting'
+ycol_name = 'Northing'
+
+mindist = 0.1
 
 def col_lower_case(df):
     outdf = df.copy(deep=True)
@@ -27,11 +33,11 @@ def col_lower_case(df):
 def main(inpointfile, thinnedoutfile):
     #df = pd.read_excel(inpointfile)
     df = pd.read_csv(inpointfile)
-    df = col_lower_case(df)
+    #df = col_lower_case(df)
     #df.rename(columns={'northing': 'n', 'easting': 'e', 'ellip_heig':'z'}, inplace=True)
     
     #run filter 
-    outdf, ptsremoved = filter_pts_by_distance(df, mindist, 'e', 'n')
+    outdf, ptsremoved = filter_pts_by_distance(df, mindist, xcol_name, ycol_name)
     
     #export
     outdf.to_csv(thinnedoutfile, index=False, float_format='%0.3f')
@@ -75,7 +81,7 @@ def filter_pts_by_distance(df, mindist, xcol, ycol):
         if not index in remset:
             #query tree, just return list [0]
             #nearlist = tree.query_ball_point(df.loc[[index],['e','n']], mindist)[0]
-            nearset = set(tree.query_ball_point(df.loc[[index],['e','n']], mindist)[0])
+            nearset = set(tree.query_ball_point(df.loc[[index],[xcol_name,ycol_name]], mindist)[0])
             #remove self
             #nearlist = [i for i in nearlist if i != index]
             nearset = nearset-{index}
