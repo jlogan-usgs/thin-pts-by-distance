@@ -18,10 +18,10 @@ from scipy import spatial
 #thinnedoutfile = 'D:\\jloganPython\\dem-validation\\data\\batch\\ob\\val_pts\\2017-0307-OB_ne_elht_NAD83_CORS96_hlfmeterThinned_kdtree_test.csv'
 
 #Wildlands 2018-11-29
-inpointfile = r"T:\UAS\2018-676-FA\validation\topo\wld17_06.txt"
-thinnedoutfile = r"T:\UAS\2018-676-FA\validation\topo\wld17_06_KDthinned10cm.txt"
-xcol_name = 'Easting'
-ycol_name = 'Northing'
+inpointfile = r"T:\UAS\2018-676-FA\validation\wld_topo_17-18_combined.csv"
+thinnedoutfile = r"T:\UAS\2018-676-FA\validation\wld_topo_17-18_combined_kdthinned10cm.csv"
+xcol_name = 'e'
+ycol_name = 'n'
 
 mindist = 0.1
 
@@ -72,7 +72,7 @@ def filter_pts_by_distance(df, mindist, xcol, ycol):
     remset = set()
     
     #build kdtree on easting, northing
-    tree =spatial.KDTree(list(zip(df[xcol],df[ycol])))
+    tree =spatial.cKDTree(list(zip(df[xcol],df[ycol])))
     
     #with tqdm(total=len(list(df.iterrows()))) as pbar:
         
